@@ -73,3 +73,6 @@ node_modules/
 .env
 
 .DS_Store
+
+# Slack webhook config — contains secrets, never commit
+functions/slack_config.json

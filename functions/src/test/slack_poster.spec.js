@@ -15,41 +15,41 @@
 const slackPoster = require('./..//slack_poster.js');
 const configReader = require("./..//slack_config_reader.js");
 const sinon = require('sinon');
-const request = require('request');
 const assert = require('assert');
 
 describe('Slack posting tests', () => {
-  var requestPostStub;
+  var fetchStub;
 
   beforeEach(() => {
-    requestPostStub = sinon.stub(request, 'post')
-    requestPostStub.yields(null, { statusCode: 200 }, null);
+    fetchStub = sinon.stub(globalThis, 'fetch').resolves({ ok: true, status: 200 });
     sinon.stub(configReader, "readConfig").returns(config);
   });
 
   afterEach(() => {
-    request.post.restore();
+    globalThis.fetch.restore();
     configReader.readConfig.restore();
   });
 
-  it('should post diffs', () =>{
-    slackPoster.postDiffs(project, version, user, diffs);
-    sinon.assert.calledOnce(requestPostStub)
-    var requestArgs = requestPostStub.getCall(0);
-    assert.equal(requestArgs.args[0], config.slackWebHookUrl);
-    assert(requestArgs.args[1].form.payload.includes("had 4 changes"))
-    assert(requestArgs.args[1].form.payload.includes(config.siteDisplayName))
-    assert(requestArgs.args[1].form.payload.includes(project.projectId))
-  });``
+  it('should post diffs', async () => {
+    await slackPoster.postDiffs(project, version, user, diffs);
+    sinon.assert.calledOnce(fetchStub);
+    var [url, opts] = fetchStub.getCall(0).args;
+    const payload = new URLSearchParams(opts.body.toString()).get('payload');
+    assert.equal(url, config.slackWebHookUrl);
+    assert(payload.includes("had 4 changes"));
+    assert(payload.includes(config.siteDisplayName));
+    assert(payload.includes(project.projectId));
+  });
 
-  it('should new monitoring for given project given project', () => {
-    slackPoster.postFirstVersionSeen(project);
-    sinon.assert.calledOnce(requestPostStub)
-    var requestArgs = requestPostStub.getCall(0);
-    assert.equal(requestArgs.args[0], config.slackWebHookUrl);
-    assert(requestArgs.args[1].form.payload.includes("First version of config values seen"));
-    assert(requestArgs.args[1].form.payload.includes(config.siteDisplayName))
-    assert(requestArgs.args[1].form.payload.includes(project.projectId))
+  it('should new monitoring for given project given project', async () => {
+    await slackPoster.postFirstVersionSeen(project);
+    sinon.assert.calledOnce(fetchStub);
+    var [url, opts] = fetchStub.getCall(0).args;
+    const payload = new URLSearchParams(opts.body.toString()).get('payload');
+    assert.equal(url, config.slackWebHookUrl);
+    assert(payload.includes("First version of config values seen"));
+    assert(payload.includes(config.siteDisplayName));
+    assert(payload.includes(project.projectId));
   });
 });
 

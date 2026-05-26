@@ -12,37 +12,30 @@
  * the License.
  */
 const admin = require('firebase-admin');
-const request = require('request');
-const { google } = require('googleapis');
 
 const firebaseRetriever = function() {
   var self = {};
 
   self.retrieveData = async function(project, version) {
-      const token = await getAccessToken();
-      return await getRemoteConfigData(project, token.access_token, version);
+    const token = await getAccessToken();
+    return await getRemoteConfigData(project, token.access_token, version);
   };
 
-  function getRemoteConfigData(project, token, version) {
-    return new Promise((resolve, reject) => {
-      var url = `https://firebaseremoteconfig.googleapis.com/v1/projects/${project.projectId}/remoteConfig?versionNumber=${version}`
-      request.get(url, (error, response, body) => {
-        if (body && response.statusCode >= 200 && response.statusCode < 300) {
-            resolve(body);
-          } else if (body) {
-            console.log("rejected token " + JSON.stringify(token));
-            reject(body);
-          } else {
-            reject(error);
-          }
-      }).auth(null, null, true, token)
+  async function getRemoteConfigData(project, token, version) {
+    const url = `https://firebaseremoteconfig.googleapis.com/v1/projects/${project.projectId}/remoteConfig?versionNumber=${version}`;
+    const response = await fetch(url, {
+      headers: { Authorization: `Bearer ${token}` }
     });
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}: ${await response.text()}`);
+    }
+    return response.text();
   }
 
   function getAccessToken() {
     return admin.credential
        .applicationDefault()
-       .getAccessToken()
+       .getAccessToken();
   }
 
   return self;
