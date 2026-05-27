@@ -12,8 +12,8 @@
  * the License.
  */
 
-const slackPoster = require('./..//slack_poster.js');
-const configReader = require("./..//slack_config_reader.js");
+const slackPoster = require('../slack_poster.js');
+const configReader = require('../slack_config_reader.js');
 const sinon = require('sinon');
 const assert = require('assert');
 
