@@ -8,7 +8,6 @@
 
 Firebase Cloud Function (Node.js 24, Gen 2) that automatically posts any changes to Firebase Remote Config to Slack.
 
-
 >**Project Name** had 2 changes \
 **Condition Added: SampleCondition**\
 Firebase User
