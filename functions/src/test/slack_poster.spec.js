@@ -26,7 +26,7 @@ describe('Slack posting tests', () => {
   });
 
   afterEach(() => {
-    globalThis.fetch.restore();
+    fetchStub.restore();
     configReader.readConfig.restore();
   });
 
