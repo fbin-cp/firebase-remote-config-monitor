@@ -12,8 +12,8 @@
  * the License.
  */
 
-const slackPoster = require('./..//slack_poster.js');
-const configReader = require("./..//slack_config_reader.js");
+const slackPoster = require('../slack_poster.js');
+const configReader = require('../slack_config_reader.js');
 const sinon = require('sinon');
 const assert = require('assert');
 
@@ -26,7 +26,7 @@ describe('Slack posting tests', () => {
   });
 
   afterEach(() => {
-    globalThis.fetch.restore();
+    fetchStub.restore();
     configReader.readConfig.restore();
   });
 
@@ -41,7 +41,7 @@ describe('Slack posting tests', () => {
     assert(payload.includes(project.projectId));
   });
 
-  it('should new monitoring for given project given project', async () => {
+  it('should post first version message for the project', async () => {
     await slackPoster.postFirstVersionSeen(project);
     sinon.assert.calledOnce(fetchStub);
     var [url, opts] = fetchStub.getCall(0).args;

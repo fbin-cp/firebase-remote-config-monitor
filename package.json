@@ -4,7 +4,6 @@
     "description": "Monitors changes to firebase remote config project(s) and posts changes to slack.",
     "author": "Jake Hall @ eBay",
     "license": "Apache-2.0",
-    "main": "firebase-retrieve.js",
     "repository": "https://github.com/fbin-cp/firebase-remote-config-monitor",
     "engines": {
         "node": ">=24"

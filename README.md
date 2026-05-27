@@ -6,7 +6,8 @@
 ---
 # Firebase Remote Config Monitor
 
-Firebase Cloud Function built on node 8 which will automatically post any changes to Firebase Remote Config to Slack.
+Firebase Cloud Function (Node.js 24, Gen 2) that automatically posts any changes to Firebase Remote Config to Slack.
+
 
 >**Project Name** had 2 changes \
 **Condition Added: SampleCondition**\
