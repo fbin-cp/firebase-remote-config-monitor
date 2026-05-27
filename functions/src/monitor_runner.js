@@ -21,12 +21,12 @@ const monitorRunner = function() {
   self.run = async function(project, version, updateUser) {
      try {
       if (version === 1) {
-        slackPoster.postFirstVersionSeen(project)
+        await slackPoster.postFirstVersionSeen(project)
       } else {
         const newConfig = await firebaseRetriever.retrieveData(project, version);
         const oldConfig = await firebaseRetriever.retrieveData(project, version - 1);
         const diffResults = firebaseDiff.findDifferences(JSON.parse(oldConfig), JSON.parse(newConfig));
-        slackPoster.postDiffs(project, version, updateUser, diffResults);
+        await slackPoster.postDiffs(project, version, updateUser, diffResults);
       }
     } catch (e) {
       console.log("error encountered:\n" + e);

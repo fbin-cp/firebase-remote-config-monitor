@@ -11,8 +11,7 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-const configReader = require("./slack_config_reader.js")
-const request = require('request');
+const configReader = require("./slack_config_reader.js");
 const yellow = "#DDA511";
 const red = "#DD2222";
 const green = "#22DD22";
@@ -20,38 +19,35 @@ const green = "#22DD22";
 const slackPoster = function() {
   var self = {};
 
-  self.postDiffs = function(project, version, user, diffs) {
+  self.postDiffs = async function(project, version, user, diffs) {
     const config = configReader.readConfig();
     const attachments = diffs.map((diff) => { return createSlackAttachment(diff, version, user) });
-    const userName = user.name ? user.name : user.email;
     const postPayload = {
       text: `*<https://console.firebase.google.com/project/${project.projectId}/config|${config.siteDisplayName}>* had ${diffs.length} change` + (diffs.length > 1 ? "s" : ""),
       attachments: attachments
     };
 
-    sendToSlack(config, postPayload)
+    await sendToSlack(config, postPayload);
   }
 
-  self.postFirstVersionSeen = function(project) {
+  self.postFirstVersionSeen = async function(project) {
     const config = configReader.readConfig();
     const postPayload = {
       text: `First version of config values seen for *${config.siteDisplayName}* in firebase console: https://console.firebase.google.com/project/${project.projectId}/config`
     };
 
-    sendToSlack(config, postPayload);
+    await sendToSlack(config, postPayload);
   }
 
-  function sendToSlack(config, payload) {
-    request.post(config.slackWebHookUrl,
-      {
-        form: { payload: JSON.stringify(payload) }
-      }, (error, response, body) => {
-
-            if (error || response.statusCode !== 200) {
-              console.log("Error posting to slack, response code " + response.statusCode + "\n" + error);
-            }
-        }
-    );
+  async function sendToSlack(config, payload) {
+    const response = await fetch(config.slackWebHookUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams({ payload: JSON.stringify(payload) })
+    });
+    if (!response.ok) {
+      console.log("Error posting to slack, response code " + response.status);
+    }
   }
 
   function createSlackAttachment(diff, version, user) {

@@ -1,6 +1,12 @@
+> **FBIN Fork** — This is [FBIN's](https://github.com/fbin-cp) maintained fork of
+> [eBay/firebase-remote-config-monitor](https://github.com/eBay/firebase-remote-config-monitor).
+> The upstream repo is no longer actively maintained. This fork targets Node.js 24
+> and Gen 2 Google Cloud Functions.
+
+---
 # Firebase Remote Config Monitor
 
-Firebase Cloud Function built on node 8 which will automatically post any changes to Firebase Remote Config to Slack.
+Firebase Cloud Function (Node.js 24, Gen 2) that automatically posts any changes to Firebase Remote Config to Slack.
 
 >**Project Name** had 2 changes \
 **Condition Added: SampleCondition**\
